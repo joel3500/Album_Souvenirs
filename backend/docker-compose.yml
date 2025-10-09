@@ -1,0 +1,51 @@
+version: '3.9'
+
+services:
+#=================================================================================================================
+  web:
+    build: .                                       #  Construit l’image depuis le Dockerfile à la racine.
+    container_name: album_souvenirs_app            #  Donne un nom personnalisé au conteneur.
+    ports:
+      - "5000:5000"                                #  Lie le port 5000 du conteneur au port 5000 de ta machine (accès via localhost:5000).
+    volumes:                                       #  Monte ton code local dans le conteneur pour voir les changements sans rebuild.
+      - .:/app                                     #  pour recharger automatiquement les fichiers modifiés
+      - ./static/uploads:/app/static/uploads       #  persistance des fichiers uploadés
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - redis
+    restart: always                                #  Redémarre automatiquement le conteneur en cas d’erreur ou au démarrage de Docker.
+#=================================================================================================  
+  db:
+    image: postgres:12
+    container_name: postgres_album
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: albumdb
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: always
+#=========================================================================
+  redis:
+    image: redis:5
+    container_name: redis_album
+    ports:
+      - "6379:6379"
+    restart: always
+#=========================================================================
+volumes:
+  pgdata:
+
+### À quoi sert docker-compose.yml ?
+#   car c’est un outil qui facilite l’orchestration de plusieurs conteneurs Docker dans un seul fichier. 
+#   Même pour un petit projet, il peut :
+
+# - Définir plusieurs services : backend Flask, base de données PostgreSQL, Redis, etc.
+# - Configurer facilement les ports, volumes, variables d’environnement, etc.
+# - Lancer toute l'application avec une seule commande : docker-compose up.
+
+

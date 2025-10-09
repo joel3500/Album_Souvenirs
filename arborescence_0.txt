@@ -1,0 +1,107 @@
+Objectif : Dockeriser le projet Album Souvenirs
+
+🧱 Composants à créer :
+Dockerfile → construire l’image Flask
+
+requirements.txt → liste des dépendances Python
+
+docker-compose.yml → (facultatif, utile si tu veux ajouter une base de données plus tard)
+
+--------------------------------------------------------------------------------------------
+Quand Docker lit le Dockerfile, 
+la commande : COPY . . va copier tous ces fichiers et dossiers dans le conteneur, 
+plus précisément dans le répertoire /app, car juste avant tu as écrit : WORKDIR /app
+Donc à la fin, l'image Docker aura cette structure :
+/app/
+├── app.py
+├── requirements.txt
+├── templates/
+├── static/
+
+Le premier . fait référence au dossier courant sur ta machine (le contexte de build).
+Le deuxième . fait référence au répertoire courant dans l’image Docker, défini par WORKDIR.
+
+On peut aussi faire plus spécifiquement ( pour optimiser l'image Docker ): 
+COPY requirements.txt .
+COPY app.py .
+COPY templates/ templates/
+COPY static/ static/   TOUT CECI equivaut èa COPY . .
+
+-------------------------------------------------------------------------------------------------
+Attention : On ne veux pas tout copier (ex : fichiers temporaires, .env, .git, etc.) ? 
+On crée un fichier .dockerignore :
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+*.db
+.vscode/
+.git/
+
+----------------------------------------------------------------------------------------------
+En résumé :
+
+Élément | Rôle
+COPY . . | Copie tous les fichiers du projet dans l’image Docker
+Avant ça : WORKDIR /app | Définit /app comme répertoire de travail dans le conteneur
+Fichier .dockerignore | Exclut les fichiers non désirés
+
+----------------------------------------------------------------------------------------------
+À quoi sert docker-compose.yml ?
+car c’est un outil qui facilite l’orchestration de plusieurs conteneurs Docker dans un seul fichier. 
+Même pour un petit projet comme le tien, il peut :
+
+- Définir plusieurs services : backend Flask, base de données PostgreSQL, Redis, etc.
+- Configurer facilement les ports, volumes, variables d’environnement, etc.
+- Lancer toute l'application avec une seule commande : docker-compose up
+
+Pour construire et lancer le projet : 
+docker-compose up --build 
+cette commande Cette commande : Construit l’image Docker de ton application Flask (selon le Dockerfile).
+    Lance trois conteneurs :
+    Le service web pour ton application Flask.
+    Le service db pour PostgreSQL.
+    Le service redis pour Redis.
+    Lie les ports appropriés (par exemple le port 5000 pour ton app, 5432 pour PostgreSQL et 6379 pour Redis).
+
+Pour arreter l'application : 
+docker-compose down
+
+Pour lancer en arrièere plan.
+docker-compose up -d
+
+--------------------------------------------------------------------------------------
+Architecture initiale du Projet :
+Album_Souvenirs/
+├── app.py
+├── utils.py
+├── requirements.txt
+├── Dockerfile
+├── docker-compose.yml
+├── .env
+├── .dockerignore
+│
+├── templates/
+│   ├── page1_upload.html        # (ta page 1 : vidéo + formulaire → POST vers /lancer_album)
+│   └── page2_album.html         # (ta page 2 : titre, profil, audio, galerie responsive)
+│
+├── static/
+│   ├── audio_sounds/            # musiques jouées sur la page 2 (sélectionnées à la page 1)
+│   │   ├── Celine_Dion_-_Im_Alive.mp3
+│   │   ├── Drake_-_Gods_Plan.mp3
+│   │   ├── Garou_Celine_Dion_-_Sous_le_vent.mp3
+│   │   └── SINACH_-_Way_Maker.mp3
+│   │
+│   ├── img/
+│   │   └── celebration_5.jpg    # image de fond (si utilisée)
+│   │
+│   ├── uploads/                 # contiendra profil.jpg + album/ (extraction du zip)
+│   │   ├── .gitkeep             # pour versionner le dossier vide
+│   │   └── album/               # ex: Appart_750/xxx.jpg (créé au runtime)
+│   │
+│   └── videos/
+│       └── descriptive.mp4      # vidéo affichée à gauche sur PC, sous le formulaire sur mobile
+│
+└── README.md                    # (optionnel mais recommandé)
+

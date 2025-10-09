@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Album souvenirs</title>
+    <style>
+        /* Général */
+        body {
+            margin: 0;
+            padding: 0;
+            background-image: url("../static/img/celebration_5.jpg");
+            background-size: cover;
+            background-repeat: no-repeat;
+            font-family: Arial, sans-serif;
+        }
+        h2 {
+            text-align: center;
+            margin-top: 20px;
+            color: #333;
+        }
+        .container {
+            display: flex;
+            flex-direction: row;
+            gap: 20px;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px;
+        }
+        .container > .video-container,
+        .container > form {
+            flex: 1;
+            /*width: 30%;*/
+            background: rgba(98, 166, 230, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+        }
+        /* Formulaire */
+        form {
+            display : flex;
+            flex-direction : column;
+            align-items : center;
+            gap : 10px;
+        }
+        form input,
+        form select,
+        form button {
+            width: 100%;
+            padding: 8px;
+            font-size: 1rem;
+        }
+        /* Footer */
+        footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: grey;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+        .hint-mobile{ font-size:.9rem; opacity:.8; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction : column-reverse;
+                padding : 10px;
+            }
+            .container > .video-container,
+            .container > form {
+                width : 90%;
+            }
+
+            /* responsive */
+            
+            .video-container { /*display:none;/ /*Masquer/plier la vidéo d’aide sous ~480 px pour laisser respirer le formulaire.*/ }
+            .hint-mobile{ display:none; /*Masquer/plier la vidéo d’aide sous ~480 px pour laisser respirer le formulaire.*/ } 
+        }
+    </style>
+</head>
+<body>
+    <h2>Album souvenirs</h2>
+    <div class="container">
+        <div class="video-container">
+            <!-- Vidéo descriptive -->
+            <video controls style="width: 100%; border-radius: 8px;">
+                <source src="/frontend/assets/video/video_album_souvenir.mp4" type="video/mp4">
+                Votre navigateur ne supporte pas la vidéo.
+            </video>
+        </div>
+        
+        <form action="https://TON-SERVICE.onrender.com/lancer_album" method="POST" enctype="multipart/form-data">
+            <input type="text" name="titre_album" placeholder="Titre de l'Album" required>
+            <label for="musique_nom">Choisissez une musique :</label>
+            <select name="musique_nom" required>
+                <option value="African_Queen.mp3">2Face Idibia - You are my African Queen</option>
+                <option value="Bob_Marley_No_Women_No_Cry.mp3">Bob Marley - No Woman no Cry</option>
+                <option value="Celine_Dion_-_Im_Alive.mp3">Céline Dion - I'm Alive</option>
+                <option value="Drake_-_Gods_Plan.mp3">Drake - God's Plan</option>
+                <option value="Fifty_Cent_ft_Snoop_Dogg_G-Unit.mp3">Fifty Cent feat Snoop Dogg - G-Unit</option>
+                <option value="Fifty_Cent_In_Da_Club.mp3">Fifty Cent - In Da Club</option>
+                <option value="Musique_Graduation_1.mp3">Musique de Graduation</option>
+                <option value="Musique_Mariage_1.mp3">Musique de Mariage</option>
+                <option value="Garou_Celine_Dion_-_Sous_le_vent.mp3">Sous le vent - Garou & Céline Dion</option>
+                <option value="SINACH_-_Way_Maker.mp3">Sinach - Way Maker</option>
+                <option value="Yes_We_Can_Obama_Song_by_william.mp3">William - Yes We Can - Obama Song</option>
+            </select>
+
+            <label>Photo de profil :</label>
+            Caméra mobile pour la photo. Ouvre directement la caméra sur mobile.
+            <input type="file" name="photo_profil" accept="image/*" capture="environment">
+
+            <p class="hint-mobile">Astuce : uploadez le ZIP depuis un PC pour gagner du temps.</p>
+
+            <label>Album (.zip de photos) :</label>
+            <input type="file" name="album_zip" accept=".zip">
+
+            <button type="submit">Lancer Album</button>
+        </form>
+    </div>
+
+    <br><br><br><br><br>
+
+    <footer>
+        &copy; Tous droits réservés. Webmaster : Joel Sandé, du Saguenay Lac Saint-Jean.
+    </footer>
+</body>
+</html>

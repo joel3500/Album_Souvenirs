@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ titre_album }}</title>
+    <style>
+        /* Reset box sizing */
+        *, *::before, *::after {
+            box-sizing : border-box;
+        }
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        h2 {
+            margin: 0;
+            color: blue;
+            text-align : center;
+        }
+        /* Header layout */
+        .header {
+            display: flex;
+            flex-direction: row;        /* ligne par défaut sur écrans larges */
+            justify-content: center;    /* aligne au centre */
+            align-items: center;
+            background-color: #f0f0f0;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;   /* passe en colonne sur mobile/tablette */
+            }
+        }
+        .header .titre-album {
+            flex: 1 1 100%;
+            text-align: center;
+            padding: 10px;
+        }
+        .header .profile-container,
+        .header .musique-et-controles {
+            flex: 1 1 100%;
+            text-align: center;
+            padding: 10px;
+        }
+        .profile-container img {
+            width: 200px;
+            height: 150px;
+            border-radius: 50%;
+            /*margin: 5px 0;*/
+            max-width: 100%;
+        }
+        .musique-et-controles p {
+            margin: 5px 0;
+        }
+        .controls {
+            margin-top: 10px;
+        }
+        .controls button {
+            margin: 5px 4px;
+            padding: 8px 12px;
+            font-size: 1rem;
+        }
+        /* Gallery grid */
+        #galerie {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            padding: 20px;
+            justify-items: center;
+        }
+        #galerie img {
+            width: 100%;
+            max-width: 300px;
+            height: auto;
+            display: block;
+        }
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #f0f0f0;
+            font-size: 0.9rem;
+        }
+        /* Responsive breakpoints */
+        @media (max-width: 1024px) {
+            #galerie {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 30px;
+            }
+        }
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+            }
+            #galerie {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+            .controls button {
+                padding: 6px 10px;
+                font-size: 0.9rem;
+            }
+        }
+        @media (max-width: 480px) {
+            #galerie {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="titre-album">
+            <h2>{{ titre_album }}</h2>
+        </div>
+        <div class="profile-container">
+            <img src="{{ url_for('static', filename='uploads/profil.jpg') }}" alt="Photo de profil">
+        </div>
+        <!-- les navigateurs bloquent l’autoplay avec son tant qu’il n’y a pas d’interaction utilisateur. 
+             Pour maximiser les chances : on ajoute autoplay et playsinline (iOS),
+             on démarre en muet (muted) puis retire le mute à la première interaction (clic/tap). 
+        
+            En bref : autoplay lance la lecture, muted permet de passer les règles d’autoplay, et on retire muted après le premier geste pour avoir le son.
+        -->
+        <div class="musique-et-controles">
+            <p>🎵 {{ musique_nom.replace('_', ' ').replace('.mp3', '') }}</p>
+            <audio id="audio" 
+                   src="{{ url_for('static', filename='audio_sounds/' ~ musique_nom) }}" 
+                   loop
+                   
+                   autoplay
+                   playsinline
+            ></audio>
+
+            <div class="controls">
+                <button onclick="document.getElementById('audio').play()">Play</button>
+                <button onclick="document.getElementById('audio').pause()">Pause</button>
+                <button onclick="(function(a){a.pause(); a.currentTime=0;})(document.getElementById('audio'))">Stop</button>
+                <br>
+                <button onclick="prevPhotos()">Previous</button>
+                <button onclick="nextPhotos()">Next</button>
+                <button onclick="window.location.href='/'">Back</button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div id="galerie"></div>
+    </main>
+
+    <script>
+
+        //======== JS pour réactiver le son au premier geste utilisateur :
+        const audio = document.getElementById('audio');
+
+        // Tente de jouer dès le chargement (certains navigateurs l'autoriseront si muted)
+        audio.play().catch(() => { /* ignoré, on attendra un geste utilisateur */ });
+
+        // Au premier clic/touch, on enlève le mute et on (re)joue
+        function enableSoundOnce() {
+            audio.muted = false;
+            audio.play().finally(() => {
+            document.removeEventListener('click', enableSoundOnce);
+            document.removeEventListener('touchstart', enableSoundOnce);
+            });
+        }
+        document.addEventListener('click', enableSoundOnce, { once: true });
+        document.addEventListener('touchstart', enableSoundOnce, { once: true });
+
+        // ========= Fin d'autoplay
+
+        const photos = JSON.parse('{{ photos|tojson | safe }}');
+        let index = 0;
+        let batchSize = photos.length <= 16 ? 1 : 4;
+
+        function showPhotos() {
+            const galerie = document.getElementById("galerie");
+            galerie.innerHTML = "";
+            const end = Math.min(index + batchSize, photos.length);
+            for (let i = index; i < end; i++) {
+                const img = document.createElement("img");
+                img.src = `/static/uploads/album/${photos[i]}`;
+                galerie.appendChild(img);
+            }
+        }
+
+        function nextPhotos() {
+            index = (index + batchSize) % photos.length;
+            showPhotos();
+        }
+
+        function prevPhotos() {
+            index = (index - batchSize + photos.length) % photos.length;
+            showPhotos();
+        }
+
+        setInterval(nextPhotos, 10000);
+        window.onload = showPhotos;
+
+    </script>
+
+    <footer>
+        &copy; Tous droits réservés. Webmaster : Joel Sandé.
+    </footer>
+</body>
+</html>

@@ -1,0 +1,24 @@
+Album_Souvenirs/
+├─ frontend/
+│  ├─ index.html                     # copie adaptée de page1_upload.html
+│  └─ assets/
+│     ├─ img/...
+│     └─ videos/descriptive.mp4      # vidéo affichée à gauche sur PC, sous le formulaire sur mobile
+└─ backend/
+   ├─ app.py
+   ├─ utils.py
+   ├─ requirements.txt    # inclut gunicorn
+   ├─ Dockerfile          # CMD gunicorn
+   ├─ render.yaml         # rootDir: backend (voir ci-dessous)
+   ├─ templates/
+   │  └─ page2_album.html
+   └─ static/
+      ├─ audio_sounds/... # musiques jouées sur la page 2 (sélectionnées à la page 1)
+      ├─ img/...
+      │   └── celebration_5.jpg    # image de fond (si utilisée)
+      ├── uploads/                 # contiendra profil.jpg + album/ (extraction du zip)
+      │   ├── .gitkeep             # pour versionner le dossier vide
+      │   └── album/               # ex: Appart_750/xxx.jpg (créé au runtime)
+      │             
+      │
+      └── README.md                    # (optionnel mais recommandé)
