@@ -1,24 +1,24 @@
 Album_Souvenirs/
-├─ frontend/
-│  ├─ index.html                     # copie adaptée de page1_upload.html
-│  └─ assets/
-│     ├─ img/...
-│     └─ videos/descriptive.mp4      # vidéo affichée à gauche sur PC, sous le formulaire sur mobile
-└─ backend/
-   ├─ app.py
-   ├─ utils.py
-   ├─ requirements.txt    # inclut gunicorn
-   ├─ Dockerfile          # CMD gunicorn
-   ├─ render.yaml         # rootDir: backend (voir ci-dessous)
-   ├─ templates/
-   │  └─ page2_album.html
-   └─ static/
-      ├─ audio_sounds/... # musiques jouées sur la page 2 (sélectionnées à la page 1)
-      ├─ img/...
-      │   └── celebration_5.jpg    # image de fond (si utilisée)
-      ├── uploads/                 # contiendra profil.jpg + album/ (extraction du zip)
-      │   ├── .gitkeep             # pour versionner le dossier vide
-      │   └── album/               # ex: Appart_750/xxx.jpg (créé au runtime)
-      │             
-      │
-      └── README.md                    # (optionnel mais recommandé)
+├─ frontend/                  # Page 1 (si hébergée sur GitHub Pages)
+│  ├─ index.html              # action du <form> → URL Render
+│  └─ assets/                 # images/vidéos statiques de la page 1
+│
+├─ backend/                   # Backend Flask déployé sur Render
+│  ├─ app.py
+│  ├─ utils.py
+│  ├─ requirements.txt        # inclut gunicorn
+│  ├─ Dockerfile              # CMD gunicorn
+│  ├─ templates/
+│  │  ├─ page2_album.html     # page 2 (Jinja)
+│  │  └─ (optionnel) index.html si page 1 servie par Flask
+│  └─ static/
+│     ├─ audio_sounds/        # musiques lues en page 2
+│     ├─ img/
+│     └─ uploads/             # profil + dossier album/ (extraction ZIP)
+│        └─ .gitkeep
+│
+├─ render.yaml                # (Blueprints) rootDir: backend
+├─ .gitignore
+└─ LICENSE
+│
+└── README.md                    # (optionnel mais recommandé)
