@@ -3,11 +3,11 @@ Album Souvenirs
 Application Flask qui permet de créer un album photos à partir d’un fichier ZIP et d’une photo de profil, avec lecture musicale en boucle.
 Architecture hybride possible :
 
- ----------------------------------------------------------------
-│ Frontend (Page 1) : statique (GitHub Pages) ou servi par Flask │
- ----------------------------------------------------------------
-│ Backend (Page 2 + upload + extraction ZIP) : Flask (Render)    │
- ----------------------------------------------------------------
+ -----------------------------------------------------------
+ Frontend (Page 1) : statique (GitHub Pages) ou servi par Flask 
+ -----------------------------------------------------------
+ Backend (Page 2 + upload + extraction ZIP) : Flask (Render)    
+ -----------------------------------------------------------
 
 Fonctionnalités
 ---------------
@@ -20,3 +20,4 @@ Page 2 : affichage dynamique de l’album (4 par 4, rotation auto), contrôles m
 - Sélecteur de musiques depuis static/audio_sounds/
 
 - Compatible desktop et mobile (responsive)
+
