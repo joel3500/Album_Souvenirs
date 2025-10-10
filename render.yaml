@@ -1,0 +1,32 @@
+services:
+  - type: web
+    name: album-souvenirs-backend
+    env: docker                 # Render build from your Dockerfile
+    rootDir: backend              # <-- le code backend est ici
+    plan: starter               # or free/starter/standard per your needs
+    region: oregon              # e.g., oregon, frankfurt
+    autoDeploy: true
+
+    # Optional: health check (serve 200 on /ping or /)
+    healthCheckPath: /
+
+    # Persistent disk for user uploads (profile + extracted ZIP photos)
+    disk:
+      name: uploads-disk
+      mountPath: /app/static/uploads
+      sizeGB: 5
+
+    # Environment variables (add more as needed)
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: FLASK_DEBUG
+        value: "0"
+      # Example DB vars for future use with Peewee/Postgres
+      # - key: DATABASE_URL
+      #   value: postgres://user:pass@host:5432/albumdb
+      # - key: REDIS_URL
+      #   value: redis://host:6379/0
+
+    # If your Dockerfile already sets CMD to Gunicorn, no startCommand needed.
+    # startCommand: gunicorn -w 2 -b 0.0.0.0:${PORT} app:app
