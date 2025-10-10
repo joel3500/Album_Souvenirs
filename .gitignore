@@ -1,1 +1,22 @@
 
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Venv local
+myenv/
+
+# Secrets
+.env              # si on ne veux pas inclure le fichier .env dans l'image 
+                  # ( mais ici on le laisse de côté car docker-compose le gère)
+
+# Uploads générés au runtime (laisser .gitkeep)
+static/uploads/*
+!static/uploads/.gitkeep
+
+# IDE / Docker
+.vscode/
+.dockerignore
+
+backend/.env
