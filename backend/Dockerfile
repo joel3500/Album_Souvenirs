@@ -23,4 +23,4 @@ EXPOSE 5000
 
 # Commande pour lancer Flask / Commande à exécuter au lancement du conteneur
 # CMD ["python", "app.py"]
-CMD ["gunicorn", "-w", "2", "-b", "0.0.0.0:${PORT}", "app:app"]
+CMD ["gunicorn","-w","2","-b","0.0.0.0:${PORT}","app:app"]
