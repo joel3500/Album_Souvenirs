@@ -1,14 +1,23 @@
 import os
 import shutil
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_from_directory
 from werkzeug.utils import secure_filename
-from backend.utils import extract_zip
+from utils import extract_zip   
+from pathlib import Path
+
 
 app = Flask(__name__)
-UPLOAD_FOLDER = os.path.join("static", "uploads")
-app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
-# Fonction pour vider le contenu des dossiers indésirables
+
+BASE_DIR = Path(__file__).resolve().parent          # .../Album_Souvenirs/backend
+FRONTEND_DIR = BASE_DIR.parent / "frontend"         # .../Album_Souvenirs/frontend
+
+                                                    # templates/ pour page2, static/ pour assets backend
+app.config["UPLOAD_FOLDER"] = str(BASE_DIR / "static" / "uploads")
+
+# CLEAN_ON_INDEX = os.getenv("CLEAN_ON_INDEX", "0") == "1"  # OFF par défaut EN LIGNE
+CLEAN_ON_INDEX = 1  # uniquement EN LOCAL. Pour les démos.
+
 def vider_les_donnees():
     # 1) Nettoyer le dossier 'uploads'
     if os.path.exists(app.config["UPLOAD_FOLDER"]):
@@ -34,11 +43,29 @@ def vider_les_donnees():
             # Supprimer tout dossier non autorisé
             shutil.rmtree(entry_path)
 
+@app.route('/favicon.ico')
+def favicon():
+    return ('', 204)
+
+
+@app.route("/reset", methods=["POST","GET"])
+def reset():
+    vider_les_donnees()
+    return "OK"
+
+# Une route “fourre-tout” pour les assets :
+@app.route("/assets/<path:filename>")
+def frontend_assets(filename):
+    return send_from_directory(str(FRONTEND_DIR / "assets"), filename)
+
+
 @app.route('/')
 def index():
-    # Appel de la fonction de nettoyage avant de rendre la page
-    vider_les_donnees()
-    return render_template("page1_upload.html")
+    if CLEAN_ON_INDEX:
+        # Appel de la fonction de nettoyage avant de rendre la page
+        vider_les_donnees()
+    return send_from_directory(str(FRONTEND_DIR), "index.local.html")
+
 
 @app.route('/lancer_album', methods=['POST'])
 def lancer_album():
