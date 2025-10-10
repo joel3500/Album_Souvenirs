@@ -12,8 +12,8 @@ app = Flask(__name__)
 BASE_DIR = Path(__file__).resolve().parent          # .../Album_Souvenirs/backend
 FRONTEND_DIR = BASE_DIR.parent / "frontend"         # .../Album_Souvenirs/frontend
 
-                                                    # templates/ pour page2, static/ pour assets backend
 app.config["UPLOAD_FOLDER"] = str(BASE_DIR / "static" / "uploads")
+app.config["BACKGROUND_IMG_FOLDER"] = str(BASE_DIR / "static" / "img")
 
 # CLEAN_ON_INDEX = os.getenv("CLEAN_ON_INDEX", "0") == "1"  # OFF par défaut EN LIGNE
 CLEAN_ON_INDEX = 1  # uniquement EN LOCAL. Pour les démos.
