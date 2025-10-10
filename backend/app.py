@@ -15,8 +15,8 @@ FRONTEND_DIR = BASE_DIR.parent / "frontend"         # .../Album_Souvenirs/fronte
 app.config["UPLOAD_FOLDER"] = str(BASE_DIR / "static" / "uploads")
 app.config["BACKGROUND_IMG_FOLDER"] = str(BASE_DIR / "static" / "img")
 
-# CLEAN_ON_INDEX = os.getenv("CLEAN_ON_INDEX", "0") == "1"  # OFF par défaut EN LIGNE
-CLEAN_ON_INDEX = 1  # uniquement EN LOCAL. Pour les démos.
+CLEAN_ON_INDEX = os.getenv("CLEAN_ON_INDEX", "0") == "1"  # OFF par défaut EN LIGNE
+# CLEAN_ON_INDEX = 1  # uniquement EN LOCAL. Pour les démos.
 
 def vider_les_donnees():
     # 1) Nettoyer le dossier 'uploads'
