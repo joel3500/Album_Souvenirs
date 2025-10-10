@@ -8,7 +8,8 @@ __pycache__/
 myenv/
 
 # Secrets
-.env              # si on ne veux pas inclure le fichier .env dans l'image 
+.env
+backend/.env      # si on ne veux pas inclure le fichier .env dans l'image 
                   # ( mais ici on le laisse de côté car docker-compose le gère)
 
 # Uploads générés au runtime (laisser .gitkeep)
@@ -17,6 +18,6 @@ static/uploads/*
 
 # IDE / Docker
 .vscode/
-.dockerignore
+.DS_Store
+Thumbs.db
 
-backend/.env
